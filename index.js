@@ -1,11 +1,18 @@
-import express from 'express';
-import bodyParser from 'body-parser';
-const app = express();
-const PORT = process.env.PORT || 8000  ;
-app.use(express.json());
+const jsonServer = require('json-server')
+const cors = require('cors')
+const path = require('path')
 
-app.use(bodyParser.json({ extended: true }));
-app.use(bodyParser.urlencoded({ extended: true }));
+const server = jsonServer.create()
+const router = jsonServer.router(path.join(__dirname, 'db.json'))
+const middlewares = jsonServer.defaults()
 
+server.use(cors())
+server.use(jsonServer.bodyParser)
+server.use(middlewares)
+server.use(router)
 
-app.listen(PORT, () => console.log(`Server is running on PORT ${PORT}`));
+const PORT = 8000
+
+server.listen(PORT, () => {
+  console.log(`JSON Server is running on http://localhost:${PORT}`)
+})
